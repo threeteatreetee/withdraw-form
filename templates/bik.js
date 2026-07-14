@@ -145,13 +145,14 @@
   }
 
   // ── auto-fit: ย่อ (zoom) ให้เนื้อหาพอดี 1 หน้า A4 เมื่อสูงเกิน ──
-  const AVAIL_PX = 1032; // ความสูงพื้นที่พิมพ์ A4 (297mm − ขอบ 12mm×2) ที่ 96dpi
+  const AVAIL_PX = 1060; // ความสูงพื้นที่พิมพ์ A4 (297mm − ขอบ 8mm×2) ที่ 96dpi
   function fitToPage() {
     const inner = host && host.querySelector('.sheet-inner');
     if (!inner) return;
     inner.style.zoom = '1';
     const need = inner.scrollHeight;
-    inner.style.zoom = need > AVAIL_PX ? String(Math.max(0.5, AVAIL_PX / need)) : '1';
+    // floor 0.82 = ไม่ย่อจนอ่านยาก (เกินนั้นยอมล้นหน้า 2); ปกติเนื้อหาพอดีหน้าอยู่แล้วจะไม่ย่อ
+    inner.style.zoom = need > AVAIL_PX ? String(Math.max(0.82, AVAIL_PX / need)) : '1';
   }
 
   // ── อัปเดตยอดสด โดยไม่ re-render (กันโฟกัสหลุดตอนพิมพ์) ──
