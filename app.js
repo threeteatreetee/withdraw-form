@@ -134,6 +134,7 @@ function renderNav() {
   $('#nav-create').onclick = () => showPage('create');
   $('#nav-accounts').onclick = () => showPage('accounts');
   $('#btn-print').onclick = printDoc;
+  $('#btn-save').onclick = printDoc;   // เปิด dialog เดียวกัน → เลือก "Save as PDF" (ชื่อไฟล์ตั้งให้แล้ว)
   $('#acc-add').onclick = () => openModal(null);
   $('#acc-search').oninput = e => { state.search = e.target.value; renderAccounts(); };
 }
