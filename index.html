@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ระบบเอกสารเบิกเงิน — ส.การโยธา 1993</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div id="login-view"></div>
+
+  <div id="main" hidden>
+    <header class="topbar no-print">
+      <button id="nav-create" class="tab on">สร้างใบเบิก</button>
+      <button id="nav-accounts" class="tab">รายชื่อบัญชี</button>
+      <span class="spacer"></span>
+      <select id="tpl-select" hidden></select>
+      <button id="btn-print">🖨 ปรินต์</button>
+    </header>
+
+    <section id="page-create">
+      <div id="form-host"></div>
+    </section>
+
+    <section id="page-accounts" hidden>
+      <input id="acc-search" placeholder="ค้นหาชื่อ / เลขบัญชี...">
+      <div id="acc-list"></div>
+      <button id="acc-add" class="no-print">＋ เพิ่มรายชื่อ</button>
+    </section>
+
+    <div id="modal-root"></div>
+  </div>
+
+  <script src="bahttext.js"></script>
+  <script src="templates/bik.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>พรีวิว template — ไม่ต้อง login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- ponytail: dev preview — ดู/ทดสอบ template โดยไม่แตะ Supabase/login. ตัวจริงใช้ index.html -->
+<div style="padding:18px; display:flex; flex-direction:column; align-items:center;">
+  <div class="no-print" style="max-width:21cm; width:100%; margin-bottom:12px; padding:10px 14px; background:#fef9c3; border:1px solid #fde047; border-radius:10px; font-size:13px;">
+    โหมดพรีวิว (ไม่ล็อกอิน • ข้อมูลตัวอย่าง) — ลองกรอก/เพิ่มรายการ แล้วกด <b>Ctrl/⌘+P</b> ดูหน้าปรินต์
+    <button onclick="window.print()" style="margin-left:8px;">🖨 ปรินต์</button>
+  </div>
+  <div id="form-host"></div>
+</div>
+
+<script src="bahttext.js"></script>
+<script src="templates/bik.js"></script>
+<script>
+  const sampleAccounts = [
+    { id: '1', nickname: 'ช่างเอก', fullname: 'นายวัชระ เสียงเอก', bank: 'กรุงไทย', account_no: '709-1-20005-0' },
+    { id: '2', nickname: '', fullname: 'นางสาวสมหญิง ใจดี', bank: 'ไทยพาณิชย์', account_no: '123-4-56789-0' },
+  ];
+  window.TEMPLATES.bik.render(document.getElementById('form-host'), sampleAccounts);
+</script>
+</body>
+</html>
