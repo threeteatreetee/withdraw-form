@@ -33,6 +33,9 @@
     host = _host; accounts = _accounts || [];
     host.innerHTML = view();
     bind();
+    fitToPage();
+    // ย่อให้ตรงตอนสั่งพิมพ์ (เผื่อขนาดเปลี่ยนก่อนพิมพ์)
+    if (!window.__bikPrintHook) { window.__bikPrintHook = true; window.addEventListener('beforeprint', fitToPage); }
   }
 
   function view() {
@@ -57,7 +60,7 @@
       <span class="hint">เลือกแล้วเติมชื่อ/ธนาคาร/เลขบัญชีให้อัตโนมัติ (แก้ต่อได้)</span>
     </div>
 
-    <div class="paper">
+    <div class="paper"><div class="sheet-inner">
       <div class="head">
         <div class="co">บริษัท ส. การโยธา 1993 จำกัด</div>
         <div class="co-sub">208 หมู่ 11 ถ.ศรีสะเกษ – อุทุมพรพิสัย ต.หญ้าปล้อง อ.เมือง จ.ศรีสะเกษ</div>
@@ -121,7 +124,17 @@
           <div>( นายสรศาสตร์ &nbsp; ศรีธัญรัตน์ )</div>
         </div>
       </div>
-    </div>`;
+    </div></div>`;
+  }
+
+  // ── auto-fit: ย่อ (zoom) ให้เนื้อหาพอดี 1 หน้า A4 เมื่อสูงเกิน ──
+  const AVAIL_PX = 1032; // ความสูงพื้นที่พิมพ์ A4 (297mm − ขอบ 12mm×2) ที่ 96dpi
+  function fitToPage() {
+    const inner = host && host.querySelector('.sheet-inner');
+    if (!inner) return;
+    inner.style.zoom = '1';
+    const need = inner.scrollHeight;
+    inner.style.zoom = need > AVAIL_PX ? String(Math.max(0.5, AVAIL_PX / need)) : '1';
   }
 
   // ── อัปเดตยอดสด โดยไม่ re-render (กันโฟกัสหลุดตอนพิมพ์) ──
@@ -132,6 +145,7 @@
     set('o-tax', fmt(t.tax)); set('o-ins', fmt(t.ins));
     host.querySelector('#o-net').innerHTML = '<b>' + fmt(t.net) + '</b>';
     set('o-net2', fmt(t.net)); set('o-txt', window.bahttext(t.net));
+    fitToPage();
   }
 
   function bind() {

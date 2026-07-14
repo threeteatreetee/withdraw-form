@@ -23,7 +23,8 @@
   .helper .hint { font-size: 12px; color: #94a3b8; }
 
   /* ── the form (A4) ── */
-  .paper { width: 21cm; min-height: 29.7cm; background: #fff; padding: 1.1cm 1.4cm; box-shadow: 0 4px 18px rgba(0,0,0,.1); font-size: 15px; line-height: 1.55; }
+  .paper { width: 210mm; min-height: 297mm; box-sizing: border-box; margin: 0 auto; background: #fff; padding: 12mm; box-shadow: 0 4px 18px rgba(0,0,0,.1); font-size: 15px; line-height: 1.55; }
+  .sheet-inner { transform-origin: top left; }
   .paper .head { text-align: center; margin-bottom: 8px; }
   .paper .co { font-size: 18px; font-weight: 700; }
   .paper .co-sub { font-size: 13px; }
@@ -102,8 +103,7 @@
     .no-print, .topbar, .helper, .add, .li-del { display: none !important; }
     #page-accounts, #acc-add, #modal-root, #login-view { display: none !important; }
     #page-create { padding: 0; }
-    .paper { width: auto; min-height: auto; box-shadow: none; padding: 0; margin: 0; }
-    .fld { border-bottom: 1px dotted #333; }
+    .paper { box-shadow: none; }         /* คงขนาด A4 เท่าจอ เพื่อให้พิมพ์ = ที่เห็น */
     .fld:focus { background: transparent; }
   }
-  @page { size: A4; margin: 12mm; }
+  @page { size: A4; margin: 0; }         /* ขอบมาจาก padding ของ .paper (12mm) */
