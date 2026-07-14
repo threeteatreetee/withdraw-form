@@ -87,12 +87,12 @@
       <button class="add no-print" id="f-add">+ เพิ่มรายการ</button>
 
       <table class="calc">
+        <tr><td class="lbl">รวมเป็นเงิน</td><td class="eq">=</td><td class="val out" id="o-sum">${fmt(t.sum)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักเบิกค่าแรงล่วงหน้า</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-adv" value="${esc(data.advance)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
-        <tr><td class="lbl">รวมรายการ (ยอดก่อนหัก)</td><td class="eq">=</td><td class="val out" id="o-sum">${fmt(t.sum)}</td><td>บาท</td></tr>
         <tr><td class="lbl">คงเหลือ</td><td class="eq">=</td><td class="val out" id="o-remain1">${fmt(t.remain1)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักภาษี ณ ที่จ่าย <input class="fld pct" id="f-tax" value="${esc(data.taxPct)}" inputmode="decimal">%</td><td class="eq">=</td><td class="val out" id="o-tax">${fmt(t.tax)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักเงินประกันผลงาน <input class="fld pct" id="f-ins" value="${esc(data.insPct)}" inputmode="decimal">%</td><td class="eq">=</td><td class="val out" id="o-ins">${fmt(t.ins)}</td><td>บาท</td></tr>
-        <tr class="net"><td class="lbl"><b>คงเหลือเป็นเงิน</b></td><td class="eq">=</td><td class="val out" id="o-net"><b>${fmt(t.net)}</b></td><td>บาท</td></tr>
+        <tr class="net"><td class="lbl"><b>คงเหลือเป็นเงินทั้งสิ้น</b></td><td class="eq">=</td><td class="val out" id="o-net"><b>${fmt(t.net)}</b></td><td>บาท</td></tr>
       </table>
 
       <div class="pay">
@@ -101,6 +101,9 @@
           <span class="fld ce" contenteditable="true" data-k="bank" data-ph="ธนาคาร">${esc(data.bank)}</span>
           <span class="fld ce" contenteditable="true" data-k="accountNo" data-ph="เลขที่บัญชี">${esc(data.accountNo)}</span></label>
         <label><input type="checkbox"> ได้รับเอกสารใบกำกับภาษีแล้ว</label>
+        <label><input type="checkbox"> ใบกำกับภาษีได้รับหลังโอนเงิน</label>
+        <label><input type="checkbox"> เช็คเอกสารตรงกับ P/O เดือน ........ แล้ว</label>
+        <label><input type="checkbox"> บิลเงินสดได้รับหลังจากโอนเงิน</label>
         <label><input type="checkbox"> ไปโอนเงินสดที่เคาน์เตอร์</label>
       </div>
 
@@ -125,9 +128,15 @@
         </div>
         <div class="box">
           <div class="chk">☐ อนุมัติ = ..............................</div>
-          <div class="chk">☐ รับสดย่อยจากหน่วย</div>
-          <div class="chk">☐ CMS &nbsp;&nbsp; ☐ B.O.L. &nbsp;&nbsp; ☐ OD BUYER</div>
-          <div class="chk">☐ จ่ายเช็ค &nbsp;&nbsp; ☐ Online &nbsp;&nbsp; ☐ จ่ายเงินสด</div>
+          <div class="chk">☐ รับสดย่อยจากหน่อย</div>
+          <div class="chk">☐ CMS ............................</div>
+          <div class="chk">☐ B.O.L. ............................</div>
+          <div class="chk">☐ OD BUYER</div>
+          <div class="chk">☐ จ่ายเช็ค 8490 ............................</div>
+          <div class="chk">☐ ส02 ทำรายการ,เฮียอนุมัติเอง</div>
+          <div class="chk">☐ ส1 Online</div>
+          <div class="chk">☐ ส22 Online</div>
+          <div class="chk">☐ จ่ายเงินสด</div>
           <div class="sp">ลงชื่อ.............................ผู้จัดการ</div>
           <div>( นายสรศาสตร์ &nbsp; ศรีธัญรัตน์ )</div>
         </div>
