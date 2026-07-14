@@ -24,7 +24,7 @@
   .helper .hint { font-size: 12px; color: #94a3b8; }
 
   /* ── the form (A4) ── */
-  .paper { width: 210mm; min-height: 297mm; box-sizing: border-box; margin: 0 auto; background: #fff; padding: 8mm; box-shadow: 0 4px 18px rgba(0,0,0,.1); font-size: 15px; line-height: 1.4; }
+  .paper { width: 210mm; min-height: 297mm; box-sizing: border-box; margin: 0 auto; background: #fff; padding: 8mm; box-shadow: 0 4px 18px rgba(0,0,0,.1); font-size: 16px; line-height: 1.4; }
   .sheet-inner { transform-origin: top left; }
   .paper .head { text-align: center; margin-bottom: 8px; }
   .paper .co { font-size: 18px; font-weight: 700; }
@@ -45,7 +45,7 @@
   .amt { width: 100%; box-sizing: border-box; text-align: right; }
   .pct { width: 42px; text-align: center; }
 
-  table.items { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 13px; }
+  table.items { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 15px; }
   table.items td { padding: 1px 4px; vertical-align: bottom; }
   .items .c-no { width: 28px; text-align: center; color: #64748b; }
   .items .c-eq { width: 20px; text-align: center; }
@@ -55,7 +55,7 @@
   .li-del { border: none; background: none; color: #dc2626; cursor: pointer; font-size: 13px; }
   .add { margin: 4px 0 12px; border: 1px dashed #94a3b8; background: #f8fafc; color: #334155; padding: 6px 14px; border-radius: 8px; cursor: pointer; }
 
-  table.calc { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  table.calc { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 16px; }
   table.calc td { padding: 1px 6px; }
   .calc .lbl { text-align: right; width: 60%; }
   .calc .eq { text-align: center; width: 20px; }
@@ -72,7 +72,7 @@
   .sign { text-align: center; margin-top: -6px; }
   .sign .cap { font-size: 13px; }
   .boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
-  .box { border: 1px solid #111; padding: 6px 10px; font-size: 14px; line-height: 1.45; }
+  .box { border: 1px solid #111; padding: 6px 10px; font-size: 15px; line-height: 1.45; }
   .box .sp { margin-top: 6px; }
   .box .chk { line-height: 1.5; }
 
