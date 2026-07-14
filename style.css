@@ -43,8 +43,8 @@
   .amt { width: 110px; text-align: right; }
   .pct { width: 42px; text-align: center; }
 
-  table.items { width: 100%; border-collapse: collapse; margin: 6px 0; }
-  table.items td { padding: 2px 4px; vertical-align: bottom; }
+  table.items { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 13px; }
+  table.items td { padding: 1px 4px; vertical-align: bottom; }
   .items .c-no { width: 28px; text-align: center; color: #64748b; }
   .items .c-eq { width: 20px; text-align: center; }
   .items .c-unit { width: 70px; }
@@ -52,8 +52,8 @@
   .li-del { border: none; background: none; color: #dc2626; cursor: pointer; font-size: 13px; }
   .add { margin: 4px 0 12px; border: 1px dashed #94a3b8; background: #f8fafc; color: #334155; padding: 6px 14px; border-radius: 8px; cursor: pointer; }
 
-  table.calc { width: 100%; border-collapse: collapse; margin: 8px 0; }
-  table.calc td { padding: 3px 6px; }
+  table.calc { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  table.calc td { padding: 1px 6px; }
   .calc .lbl { text-align: right; width: 60%; }
   .calc .eq { text-align: center; width: 20px; }
   .calc .val { text-align: right; width: 130px; border-bottom: 1px dotted #333; }
