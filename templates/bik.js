@@ -60,7 +60,7 @@
         <td class="c-no">${i + 1}</td>
         <td><input class="li-name fld" data-i="${i}" value="${esc(it.name)}" placeholder="รายการค่าแรง/ค่าวัสดุ..."></td>
         <td class="c-eq">=</td>
-        <td><input class="li-amt fld amt" data-i="${i}" value="${esc(it.amount)}" inputmode="decimal" placeholder="0.00"></td>
+        <td class="c-amt"><input class="li-amt fld amt" data-i="${i}" value="${esc(it.amount)}" inputmode="decimal" placeholder="0.00"></td>
         <td class="c-unit">บาท <button class="li-del no-print" data-i="${i}" title="ลบแถว">✕</button></td>
       </tr>`).join('');
 
