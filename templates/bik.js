@@ -34,16 +34,11 @@
     host.innerHTML = view();
     bind();
     fitToPage();
-    // hook พิมพ์: ย่อให้พอดี + ตั้งชื่อไฟล์ PDF จาก template แล้วคืนค่าเดิม
-    if (!window.__bikPrintHook) {
-      window.__bikPrintHook = true;
-      window.addEventListener('beforeprint', () => { fitToPage(); savedTitle = document.title; document.title = docName(); });
-      window.addEventListener('afterprint', () => { if (savedTitle) document.title = savedTitle; });
-    }
+    // ย่อให้พอดีอีกทีตอนสั่งพิมพ์ (ชื่อไฟล์จัดการใน app.js — ต้องตั้ง title ก่อน window.print())
+    if (!window.__bikPrintHook) { window.__bikPrintHook = true; window.addEventListener('beforeprint', fitToPage); }
   }
 
   // ชื่อไฟล์เวลา print/save: ใบเบิกเงิน <ไซต์งาน> <ผู้เบิก> <วันที่> (แทน / ในวันที่ด้วย - เลี่ยงปัญหา path)
-  let savedTitle = '';
   function docName() {
     const site = (data.work || '').trim();
     const payer = (data.payerName || '').trim();
@@ -186,5 +181,5 @@
   }
 
   window.TEMPLATES = window.TEMPLATES || {};
-  window.TEMPLATES.bik = { id: 'bik', title: 'ใบเบิกเงิน (ค่าแรง/วัสดุ)', render, compute };
+  window.TEMPLATES.bik = { id: 'bik', title: 'ใบเบิกเงิน (ค่าแรง/วัสดุ)', render, compute, filename: docName };
 })();

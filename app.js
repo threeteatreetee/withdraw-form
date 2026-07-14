@@ -133,7 +133,7 @@ function renderNav() {
   $('#tpl-select').onchange = e => { state.tplId = e.target.value; mountTemplate(); };
   $('#nav-create').onclick = () => showPage('create');
   $('#nav-accounts').onclick = () => showPage('accounts');
-  $('#btn-print').onclick = () => window.print();
+  $('#btn-print').onclick = printDoc;
   $('#acc-add').onclick = () => openModal(null);
   $('#acc-search').oninput = e => { state.search = e.target.value; renderAccounts(); };
 }
@@ -141,6 +141,15 @@ function mountTemplate() {
   const t = window.TEMPLATES[state.tplId];
   if (t) t.render($('#form-host'), state.accounts);
 }
+
+// ── ชื่อไฟล์ PDF: ต้องตั้ง document.title ก่อน window.print() (Chrome อ่าน title ตอนเรียก print) ──
+let __origTitle = null;
+function printFilename() { const t = window.TEMPLATES[state.tplId]; return (t && t.filename) ? t.filename() : ''; }
+function applyPrintTitle() { const n = printFilename(); if (n) { if (__origTitle === null) __origTitle = document.title; document.title = n; } }
+function restoreTitle() { if (__origTitle !== null) { document.title = __origTitle; __origTitle = null; } }
+function printDoc() { applyPrintTitle(); window.print(); }
+window.addEventListener('beforeprint', applyPrintTitle);  // เผื่อกด Ctrl+P (บาง browser ใช้ได้)
+window.addEventListener('afterprint', restoreTitle);
 function showPage(p) {
   state.page = p;
   $('#page-create').hidden = p !== 'create';
