@@ -34,8 +34,21 @@
     host.innerHTML = view();
     bind();
     fitToPage();
-    // ย่อให้ตรงตอนสั่งพิมพ์ (เผื่อขนาดเปลี่ยนก่อนพิมพ์)
-    if (!window.__bikPrintHook) { window.__bikPrintHook = true; window.addEventListener('beforeprint', fitToPage); }
+    // hook พิมพ์: ย่อให้พอดี + ตั้งชื่อไฟล์ PDF จาก template แล้วคืนค่าเดิม
+    if (!window.__bikPrintHook) {
+      window.__bikPrintHook = true;
+      window.addEventListener('beforeprint', () => { fitToPage(); savedTitle = document.title; document.title = docName(); });
+      window.addEventListener('afterprint', () => { if (savedTitle) document.title = savedTitle; });
+    }
+  }
+
+  // ชื่อไฟล์เวลา print/save: ใบเบิกเงิน <ไซต์งาน> <ผู้เบิก> <วันที่> (แทน / ในวันที่ด้วย - เลี่ยงปัญหา path)
+  let savedTitle = '';
+  function docName() {
+    const site = (data.work || '').trim();
+    const payer = (data.payerName || '').trim();
+    const date = (data.date || '').trim().replace(/\//g, '-');
+    return ['ใบเบิกเงิน', site, payer, date].filter(Boolean).join(' ');
   }
 
   function view() {
