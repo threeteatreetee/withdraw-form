@@ -33,6 +33,10 @@
   .ln.claim { margin-top: 10px; }
   .fld { border: none; border-bottom: 1px dotted #333; background: transparent; font: inherit; color: inherit; padding: 0 4px; outline: none; }
   .fld:focus { border-bottom-color: #2563eb; background: #eff6ff; }
+  /* ช่องข้อความอิสระ: ยืดตามเนื้อหา + ตัดบรรทัด (กันข้อความล้น box แล้วหาย) */
+  .ce { display: inline-block; min-width: 90px; max-width: 100%; vertical-align: bottom; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+  .ce.wide { min-width: 170px; }
+  .ce:empty::before { content: attr(data-ph); color: #9ca3af; }
   .w-date { width: 90px; text-align: center; }
   .w-mid { width: 130px; }
   .w-grow { width: 210px; }

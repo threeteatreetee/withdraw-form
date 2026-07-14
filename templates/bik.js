@@ -68,8 +68,8 @@
 
       <div class="ln"><b>เรื่อง</b>&nbsp;&nbsp;ขอเบิกเงินค่าแรงล่วงหน้าหรือค่าวัสดุ</div>
       <div class="ln"><b>เรียน</b>&nbsp;&nbsp;ผู้จัดการบริษัท ส.การโยธา 1993 จำกัด</div>
-      <div class="ln">ด้วย ข้าพเจ้า <input class="fld w-grow" id="f-payer" value="${esc(data.payerName)}"> ได้เป็นผู้รับเหมางาน <input class="fld w-grow" id="f-work" value="${esc(data.work)}"></div>
-      <div class="ln">ณ <input class="fld w-mid" id="f-place" value="${esc(data.place)}"> อำเภอ <input class="fld w-mid" id="f-amphoe" value="${esc(data.amphoe)}"> จังหวัด <input class="fld w-mid" id="f-prov" value="${esc(data.province)}"> นั้น</div>
+      <div class="ln">ด้วย ข้าพเจ้า <span class="fld ce wide" contenteditable="true" data-k="payerName">${esc(data.payerName)}</span> ได้เป็นผู้รับเหมางาน <span class="fld ce wide" contenteditable="true" data-k="work">${esc(data.work)}</span></div>
+      <div class="ln">ณ <span class="fld ce" contenteditable="true" data-k="place">${esc(data.place)}</span> อำเภอ <span class="fld ce" contenteditable="true" data-k="amphoe">${esc(data.amphoe)}</span> จังหวัด <span class="fld ce" contenteditable="true" data-k="province">${esc(data.province)}</span> นั้น</div>
       <div class="ln">บัดนี้ ข้าพเจ้า ได้ทำงานดังกล่าว ดังนี้</div>
 
       <table class="items"><tbody>${rows}</tbody></table>
@@ -87,8 +87,8 @@
       <div class="pay">
         <label><input type="checkbox" id="p-bol" checked> โอน B.O.L. ได้</label>
         <label><input type="checkbox" id="p-acc" checked> โอนเงินเลขที่บัญชี
-          <input class="fld w-mid" id="f-bank" value="${esc(data.bank)}" placeholder="ธนาคาร">
-          <input class="fld w-mid" id="f-accno" value="${esc(data.accountNo)}" placeholder="เลขที่บัญชี"></label>
+          <span class="fld ce" contenteditable="true" data-k="bank" data-ph="ธนาคาร">${esc(data.bank)}</span>
+          <span class="fld ce" contenteditable="true" data-k="accountNo" data-ph="เลขที่บัญชี">${esc(data.accountNo)}</span></label>
         <label><input type="checkbox"> ได้รับเอกสารใบกำกับภาษีแล้ว</label>
         <label><input type="checkbox"> ไปโอนเงินสดที่เคาน์เตอร์</label>
       </div>
@@ -136,10 +136,10 @@
 
   function bind() {
     const q = s => host.querySelector(s);
-    // ฟิลด์ข้อความทั่วไป
-    const text = { 'f-date': 'date', 'f-payer': 'payerName', 'f-work': 'work', 'f-place': 'place',
-                   'f-amphoe': 'amphoe', 'f-prov': 'province', 'f-bank': 'bank', 'f-accno': 'accountNo' };
-    for (const id in text) { const el = q('#' + id); if (el) el.oninput = e => { data[text[id]] = e.target.value; }; }
+    // วันที่ (input สั้น)
+    const fd = q('#f-date'); if (fd) fd.oninput = e => { data.date = e.target.value; };
+    // ช่องข้อความอิสระ = contenteditable (ยืด+ตัดบรรทัดเอง ไม่ตัดข้อความหาย) → อ่านจาก textContent
+    host.querySelectorAll('[data-k]').forEach(el => el.oninput = e => { data[e.target.dataset.k] = e.target.textContent; });
     // ฟิลด์ตัวเลข → recompute
     const money = { 'f-adv': 'advance', 'f-tax': 'taxPct', 'f-ins': 'insPct' };
     for (const id in money) { const el = q('#' + id); if (el) el.oninput = e => { data[money[id]] = e.target.value; recompute(); }; }
