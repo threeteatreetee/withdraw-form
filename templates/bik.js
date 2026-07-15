@@ -34,6 +34,8 @@
     host.innerHTML = view();
     bind();
     fitToPage();
+    // ฟอนต์เว็บ (Sarabun) โหลดเสร็จ metrics เปลี่ยน → วัด+ย่อใหม่ (กันเพี้ยนข้าม OS)
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitToPage);
     // ย่อให้พอดีอีกทีตอนสั่งพิมพ์ (ชื่อไฟล์จัดการใน app.js — ต้องตั้ง title ก่อน window.print())
     if (!window.__bikPrintHook) { window.__bikPrintHook = true; window.addEventListener('beforeprint', fitToPage); }
   }
