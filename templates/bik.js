@@ -54,7 +54,6 @@
 
   function view() {
     const t = compute(data);
-    const dopts = accounts.map(a => `<option value="${esc(acctLabel(a))}">`).join('');
     const rows = data.items.map((it, i) => `
       <tr>
         <td class="c-no">${i + 1}</td>
@@ -67,11 +66,15 @@
     return `
     <!-- แถบช่วย เลือกจากบัญชี (ไม่ปรินต์) -->
     <div class="helper no-print">
-      <label>เลือกจากบัญชี:
-        <input id="payer-search" list="payer-list" placeholder="พิมพ์ชื่อค้นหา / เลือกจากรายการ" autocomplete="off">
-        <datalist id="payer-list">${dopts}</datalist>
-      </label>
-      <span class="hint">พิมพ์ชื่อเพื่อค้นหา แล้วเลือก → เติมชื่อ/ธนาคาร/เลขบัญชีให้อัตโนมัติ</span>
+      <div class="combo-field">
+        <div class="combo-label">เลือกจากบัญชี</div>
+        <div class="combo">
+          <input id="payer-search" class="combo-input" placeholder="พิมพ์ชื่อค้นหา..." autocomplete="off">
+          <span class="combo-arrow">▾</span>
+          <div id="payer-list" class="combo-list" hidden></div>
+        </div>
+      </div>
+      <span class="hint">พิมพ์ชื่อค้นหา แล้วเลือก → เติมชื่อ/ธนาคาร/เลขบัญชีให้อัตโนมัติ</span>
     </div>
 
     <div class="paper"><div class="sheet-inner">
@@ -200,15 +203,29 @@
     });
     host.querySelectorAll('.li-del').forEach(el => el.onclick = e => { data.items.splice(+e.target.dataset.i, 1); render(host, accounts); });
     q('#f-add').onclick = () => { data.items.push({ name: '', amount: '' }); render(host, accounts); };
-    // เลือกจากบัญชี (พิมพ์ค้นหา) → autofill เมื่อค่าตรงกับรายการ
-    const sel = q('#payer-search');
-    if (sel) sel.oninput = e => {
-      const v = e.target.value.trim();
-      const a = accounts.find(x => acctLabel(x) === v);
-      if (!a) return;   // ยังพิมพ์ไม่ตรง = ยังไม่เลือก
-      data.payerName = a.fullname || ''; data.bank = a.bank || ''; data.accountNo = a.account_no || '';
-      render(host, accounts);
-    };
+    // เลือกจากบัญชี — custom combobox (พิมพ์ค้นหา + เลือกจากรายการ)
+    const cInput = q('#payer-search'), cList = q('#payer-list'), cArrow = host.querySelector('.combo-arrow');
+    if (cInput && cList) {
+      const pick = a => { data.payerName = a.fullname || ''; data.bank = a.bank || ''; data.accountNo = a.account_no || ''; render(host, accounts); };
+      const build = () => {
+        const f = cInput.value.trim().toLowerCase();
+        const ms = accounts.filter(a => !f || acctLabel(a).toLowerCase().includes(f) || (a.account_no || '').includes(f));
+        cList.innerHTML = ms.length
+          ? ms.map(a => `<div class="combo-opt" data-id="${a.id}"><div class="combo-opt-main">${esc(a.nickname || a.fullname)}${a.nickname ? `<span class="combo-opt-sub"> ${esc(a.fullname)}</span>` : ''}</div><div class="combo-opt-acc">${esc(a.bank || '')} ${esc(a.account_no || '')}</div></div>`).join('')
+          : `<div class="combo-empty">ไม่พบรายชื่อ</div>`;
+        cList.querySelectorAll('.combo-opt').forEach(el => el.onmousedown = ev => { ev.preventDefault(); const a = accounts.find(x => x.id === el.dataset.id); if (a) pick(a); });
+      };
+      const open = () => { cList.hidden = false; cArrow.textContent = '▴'; build(); };
+      const close = () => { cList.hidden = true; cArrow.textContent = '▾'; };
+      cInput.onfocus = open;
+      cInput.oninput = () => { cList.hidden ? open() : build(); };
+      cInput.onblur = () => setTimeout(close, 150);   // หน่วงให้ mousedown ของ option ทำงานก่อน
+      cInput.onkeydown = ev => {
+        if (ev.key === 'Escape') { close(); cInput.blur(); }
+        else if (ev.key === 'Enter') { const first = cList.querySelector('.combo-opt'); if (first) { ev.preventDefault(); const a = accounts.find(x => x.id === first.dataset.id); if (a) pick(a); } }
+      };
+      cArrow.onmousedown = ev => { ev.preventDefault(); cList.hidden ? cInput.focus() : close(); };
+    }
   }
 
   window.TEMPLATES = window.TEMPLATES || {};
