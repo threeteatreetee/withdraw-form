@@ -55,7 +55,7 @@
   .w-date { width: 90px; text-align: center; }
   .w-mid { width: 130px; }
   .w-grow { width: 210px; }
-  .amt { width: 100%; box-sizing: border-box; text-align: right; }
+  .amt { width: 100%; box-sizing: border-box; text-align: right; padding-right: 0; }   /* เลขในช่องกรอก = ตรงกับช่องอัตโนมัติ */
   .pct { width: 42px; text-align: center; }
 
   table.items { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 15px; }
@@ -73,6 +73,7 @@
   .calc .lbl { text-align: right; width: 60%; }
   .calc .eq { text-align: center; width: 20px; }
   .calc .val { text-align: right; width: 130px; border-bottom: 1px dotted #333; }
+  .calc td:last-child { width: 70px; }   /* คอลัมน์ "บาท" กว้างเท่าตารางรายการ → เลขตรงคอลัมน์กัน */
   .calc .out { font-variant-numeric: tabular-nums; }
   .calc .net .val { border-bottom: 2px solid #111; }
 
