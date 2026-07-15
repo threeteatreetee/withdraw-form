@@ -13,7 +13,7 @@
     date: todayTH(), payerName: '', bank: '', accountNo: '',
     work: '', place: '', amphoe: '', province: '',
     items: [],                 // {name, amount} — เริ่ม 0 แถว
-    advance: '', taxPct: 3, insPct: 5,
+    advance: '', taxPct: 3, insPct: 5, matCut: '', suppliesCut: '',
   };
 
   // ── การคำนวณ (money path) ──
@@ -23,8 +23,10 @@
     const remain1 = r2(sum - advance);
     const tax = r2(remain1 * num(d.taxPct) / 100);
     const ins = r2(sum * num(d.insPct) / 100);
-    const net = r2(remain1 - tax - ins);
-    return { sum, advance, remain1, tax, ins, net };
+    const matCut = num(d.matCut);
+    const suppliesCut = num(d.suppliesCut);
+    const net = r2(remain1 - tax - ins - matCut - suppliesCut);
+    return { sum, advance, remain1, tax, ins, matCut, suppliesCut, net };
   }
 
   let host = null, accounts = [];
@@ -95,6 +97,8 @@
         <tr><td class="lbl">คงเหลือ</td><td class="eq">=</td><td class="val out" id="o-remain1">${fmt(t.remain1)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักภาษี ณ ที่จ่าย <input class="fld pct" id="f-tax" value="${esc(data.taxPct)}" inputmode="decimal">%</td><td class="eq">=</td><td class="val out" id="o-tax">${fmt(t.tax)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักเงินประกันผลงาน <input class="fld pct" id="f-ins" value="${esc(data.insPct)}" inputmode="decimal">%</td><td class="eq">=</td><td class="val out" id="o-ins">${fmt(t.ins)}</td><td>บาท</td></tr>
+        <tr><td class="lbl">หักค่าวัสดุ</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-mat" value="${esc(data.matCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
+        <tr><td class="lbl">หักค่าวัสดุสิ้นเปลือง</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-sup" value="${esc(data.suppliesCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
         <tr class="net"><td class="lbl"><b>คงเหลือเป็นเงินทั้งสิ้น</b></td><td class="eq">=</td><td class="val out" id="o-net"><b>${fmt(t.net)}</b></td><td>บาท</td></tr>
       </table>
 
@@ -104,6 +108,7 @@
           <span class="fld ce" contenteditable="true" data-k="bank" data-ph="ธนาคาร">${esc(data.bank)}</span>
           <span class="fld ce" contenteditable="true" data-k="accountNo" data-ph="เลขที่บัญชี">${esc(data.accountNo)}</span></label>
         <label><input type="checkbox"> ได้รับเอกสารใบกำกับภาษีแล้ว</label>
+        <label><input type="checkbox"> ได้ทำเอกสารภาษีหัก ณ ที่จ่ายแล้ว</label>
         <label><input type="checkbox"> ใบกำกับภาษีได้รับหลังโอนเงิน</label>
         <label><input type="checkbox"> เช็คเอกสารตรงกับ P/O เดือน ........ แล้ว</label>
         <label><input type="checkbox"> บิลเงินสดได้รับหลังจากโอนเงิน</label>
@@ -182,7 +187,7 @@
     // ช่องข้อความอิสระ = contenteditable (ยืด+ตัดบรรทัดเอง ไม่ตัดข้อความหาย) → อ่านจาก textContent
     host.querySelectorAll('[data-k]').forEach(el => el.oninput = e => { data[e.target.dataset.k] = e.target.textContent; });
     // ฟิลด์ตัวเลข → recompute
-    const money = { 'f-adv': 'advance', 'f-tax': 'taxPct', 'f-ins': 'insPct' };
+    const money = { 'f-adv': 'advance', 'f-tax': 'taxPct', 'f-ins': 'insPct', 'f-mat': 'matCut', 'f-sup': 'suppliesCut' };
     for (const id in money) { const el = q('#' + id); if (el) el.oninput = e => { data[money[id]] = e.target.value; recompute(); }; }
     // แถวรายการ (delegation)
     host.querySelectorAll('.li-name').forEach(el => el.oninput = e => { data.items[+e.target.dataset.i].name = e.target.value; });
