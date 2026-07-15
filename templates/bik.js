@@ -7,6 +7,7 @@
   const fmt = n => n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const todayTH = () => { const d = new Date(); return `${d.getDate()}/${d.getMonth() + 1}/${(d.getFullYear() + 543) % 100}`; };
+  const acctLabel = a => a.nickname ? a.nickname + ' — ' + a.fullname : a.fullname;   // ป้ายค้นหา/แสดง
 
   // ── สถานะฟอร์ม (คงไว้ข้ามการสลับหน้า) ──
   let data = {
@@ -53,8 +54,7 @@
 
   function view() {
     const t = compute(data);
-    const opts = accounts.map(a =>
-      `<option value="${a.id}">${esc(a.nickname || a.fullname)}${a.nickname ? ' — ' + esc(a.fullname) : ''}</option>`).join('');
+    const dopts = accounts.map(a => `<option value="${esc(acctLabel(a))}">`).join('');
     const rows = data.items.map((it, i) => `
       <tr>
         <td class="c-no">${i + 1}</td>
@@ -68,9 +68,10 @@
     <!-- แถบช่วย เลือกจากบัญชี (ไม่ปรินต์) -->
     <div class="helper no-print">
       <label>เลือกจากบัญชี:
-        <select id="payer-select"><option value="">— พิมพ์เอง —</option>${opts}</select>
+        <input id="payer-search" list="payer-list" placeholder="พิมพ์ชื่อค้นหา / เลือกจากรายการ" autocomplete="off">
+        <datalist id="payer-list">${dopts}</datalist>
       </label>
-      <span class="hint">เลือกแล้วเติมชื่อ/ธนาคาร/เลขบัญชีให้อัตโนมัติ (แก้ต่อได้)</span>
+      <span class="hint">พิมพ์ชื่อเพื่อค้นหา แล้วเลือก → เติมชื่อ/ธนาคาร/เลขบัญชีให้อัตโนมัติ</span>
     </div>
 
     <div class="paper"><div class="sheet-inner">
@@ -194,11 +195,12 @@
     host.querySelectorAll('.li-amt').forEach(el => el.oninput = e => { data.items[+e.target.dataset.i].amount = e.target.value; recompute(); });
     host.querySelectorAll('.li-del').forEach(el => el.onclick = e => { data.items.splice(+e.target.dataset.i, 1); render(host, accounts); });
     q('#f-add').onclick = () => { data.items.push({ name: '', amount: '' }); render(host, accounts); };
-    // เลือกจากบัญชี → autofill
-    const sel = q('#payer-select');
-    if (sel) sel.onchange = e => {
-      const a = accounts.find(x => x.id === e.target.value);
-      if (!a) return;
+    // เลือกจากบัญชี (พิมพ์ค้นหา) → autofill เมื่อค่าตรงกับรายการ
+    const sel = q('#payer-search');
+    if (sel) sel.oninput = e => {
+      const v = e.target.value.trim();
+      const a = accounts.find(x => acctLabel(x) === v);
+      if (!a) return;   // ยังพิมพ์ไม่ตรง = ยังไม่เลือก
       data.payerName = a.fullname || ''; data.bank = a.bank || ''; data.accountNo = a.account_no || '';
       render(host, accounts);
     };
