@@ -9,8 +9,16 @@
   const todayTH = () => { const d = new Date(); return `${d.getDate()}/${d.getMonth() + 1}/${(d.getFullYear() + 543) % 100}`; };
   const acctLabel = a => a.nickname ? a.nickname + ' — ' + a.fullname : a.fullname;   // ป้ายค้นหา/แสดง
 
+  // ── หัวบริษัท (เลือกได้ในใบเดียว) ──
+  const COMPANIES = [
+    { name: 'บริษัท ส. การโยธา 1993 จำกัด', addr: '208 หมู่ 11 ถ.ศรีสะเกษ – อุทุมพรพิสัย ต.หญ้าปล้อง อ.เมือง จ.ศรีสะเกษ', phone: '045-643078 , 081-8762030' },
+    { name: 'บริษัท ส.การโยธา กรุ๊ป 2021 จำกัด', addr: '214 หมู่บ้านปิยะพร หมู่ที่ 2 ตำบลโนนผึ้ง อำเภอวารินชำราบ จ.อุบลราชธานี 34190', phone: '061-9976577' },
+    { name: 'ส.การโยธา พร็อพเพอร์ตี้ จำกัด', addr: '208 หมู่ที่ 11 ตำบลหญ้าปล้อง อำเภอเมืองศรีสะเกษ จ.ศรีสะเกษ 33000', phone: '0824761127' },
+  ];
+
   // ── สถานะฟอร์ม (คงไว้ข้ามการสลับหน้า) ──
   let data = {
+    company: 0,                // index ใน COMPANIES (default = 1993)
     date: todayTH(), payerName: '', bank: '', accountNo: '',
     work: '', place: '', amphoe: '', province: '',
     items: [],                 // {name, amount} — เริ่ม 0 แถว
@@ -54,6 +62,7 @@
 
   function view() {
     const t = compute(data);
+    const co = COMPANIES[data.company] || COMPANIES[0];
     const rows = data.items.map((it, i) => `
       <tr>
         <td class="c-no">${i + 1}</td>
@@ -67,6 +76,12 @@
     <!-- แถบช่วย เลือกจากบัญชี (ไม่ปรินต์) -->
     <div class="helper no-print">
       <div class="combo-field">
+        <div class="combo-label">หัวบริษัท</div>
+        <select id="company-select" class="combo-input">
+          ${COMPANIES.map((c, i) => `<option value="${i}" ${i === data.company ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="combo-field">
         <div class="combo-label">เลือกจากบัญชี</div>
         <div class="combo">
           <input id="payer-search" class="combo-input" placeholder="พิมพ์ชื่อค้นหา..." autocomplete="off">
@@ -79,15 +94,15 @@
 
     <div class="paper"><div class="sheet-inner">
       <div class="head">
-        <div class="co">บริษัท ส. การโยธา 1993 จำกัด</div>
-        <div class="co-sub">208 หมู่ 11 ถ.ศรีสะเกษ – อุทุมพรพิสัย ต.หญ้าปล้อง อ.เมือง จ.ศรีสะเกษ</div>
-        <div class="co-sub">โทร 045-643078 , 081-8762030</div>
+        <div class="co">${esc(co.name)}</div>
+        <div class="co-sub">${esc(co.addr)}</div>
+        ${co.phone ? `<div class="co-sub">โทร ${esc(co.phone)}</div>` : ''}
       </div>
 
       <div class="row-r">วันที่ <input class="fld w-date" id="f-date" value="${esc(data.date)}"></div>
 
       <div class="ln"><b>เรื่อง</b>&nbsp;&nbsp;ขอเบิกเงินค่าแรงล่วงหน้าหรือค่าวัสดุ</div>
-      <div class="ln"><b>เรียน</b>&nbsp;&nbsp;ผู้จัดการบริษัท ส.การโยธา 1993 จำกัด</div>
+      <div class="ln"><b>เรียน</b>&nbsp;&nbsp;ผู้จัดการ${esc(co.name)}</div>
       <div class="ln">ด้วย ข้าพเจ้า <span class="fld ce wide" contenteditable="true" data-k="payerName">${esc(data.payerName)}</span> ได้เป็นผู้รับเหมางาน <span class="fld ce wide" contenteditable="true" data-k="work">${esc(data.work)}</span></div>
       <div class="ln">ณ <span class="fld ce" contenteditable="true" data-k="place">${esc(data.place)}</span> อำเภอ <span class="fld ce" contenteditable="true" data-k="amphoe">${esc(data.amphoe)}</span> จังหวัด <span class="fld ce" contenteditable="true" data-k="province">${esc(data.province)}</span> นั้น</div>
       <div class="ln">บัดนี้ ข้าพเจ้า ได้ทำงานดังกล่าว ดังนี้</div>
@@ -203,6 +218,10 @@
     });
     host.querySelectorAll('.li-del').forEach(el => el.onclick = e => { data.items.splice(+e.target.dataset.i, 1); render(host, accounts); });
     q('#f-add').onclick = () => { data.items.push({ name: '', amount: '' }); render(host, accounts); };
+    // เลือกหัวบริษัท
+    const cs = q('#company-select');
+    if (cs) cs.onchange = e => { data.company = +e.target.value; render(host, accounts); };
+
     // เลือกจากบัญชี — custom combobox (พิมพ์ค้นหา + เลือกจากรายการ)
     const cInput = q('#payer-search'), cList = q('#payer-list'), cArrow = host.querySelector('.combo-arrow');
     if (cInput && cList) {
