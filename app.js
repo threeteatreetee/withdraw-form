@@ -148,7 +148,7 @@ let __origTitle = null;
 function printFilename() { const t = window.TEMPLATES[state.tplId]; return (t && t.filename) ? t.filename() : ''; }
 function applyPrintTitle() { const n = printFilename(); if (n) { if (__origTitle === null) __origTitle = document.title; document.title = n; } }
 function restoreTitle() { if (__origTitle !== null) { document.title = __origTitle; __origTitle = null; } }
-function printDoc() { applyPrintTitle(); window.print(); }
+function printDoc() { applyPrintTitle(); const t = window.TEMPLATES[state.tplId]; if (t && t.fit) t.fit(); window.print(); }
 window.addEventListener('beforeprint', applyPrintTitle);  // เผื่อกด Ctrl+P (บาง browser ใช้ได้)
 window.addEventListener('afterprint', restoreTitle);
 function showPage(p) {

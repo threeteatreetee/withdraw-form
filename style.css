@@ -24,11 +24,11 @@
   .helper .hint { font-size: 12px; color: #94a3b8; }
 
   /* ── the form (A4) ── */
-  .paper { width: 210mm; min-height: 297mm; box-sizing: border-box; margin: 0 auto; background: #fff; padding: 8mm; box-shadow: 0 4px 18px rgba(0,0,0,.1); font-size: 16px; line-height: 1.4; }
-  .sheet-inner { transform-origin: top left; }
-  .paper .head { text-align: center; margin-bottom: 8px; }
+  .paper { width: 210mm; min-height: 296mm; box-sizing: border-box; margin: 0 auto; background: #fff; padding: 8mm; box-shadow: 0 4px 18px rgba(0,0,0,.1); font-size: 16px; line-height: 1.4; display: flex; flex-direction: column; }
+  .sheet-inner { transform-origin: top left; display: flex; flex-direction: column; flex: 1; }
+  .paper .head { text-align: center; margin: 22px 0 8px; }   /* เคาะหัวลงมาอีกบรรทัด */
   .paper .co { font-size: 18px; font-weight: 700; }
-  .paper .co-sub { font-size: 13px; }
+  .paper .co-sub { font-size: 16px; }   /* ที่อยู่ = เท่าเนื้อความ */
   .paper .head { border-bottom: 2px solid #111; padding-bottom: 6px; }
   .row-r { text-align: right; margin: 3px 0; }
   .ln { margin: 2px 0; }
@@ -63,7 +63,7 @@
   .calc .out { font-variant-numeric: tabular-nums; }
   .calc .net .val { border-bottom: 2px solid #111; }
 
-  .pay { margin: 4px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 20px; }
+  .pay { margin: auto 0 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 20px; }   /* auto-top = ดันเช็คบ็อกซ์+ที่เหลือลงชิดล่าง */
   .pay label { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .baht-txt { font-style: italic; }
   .out { font-variant-numeric: tabular-nums; }
@@ -105,7 +105,7 @@
     .no-print, .topbar, .helper, .add, .li-del { display: none !important; }
     #page-accounts, #acc-add, #modal-root, #login-view { display: none !important; }
     #page-create { padding: 0; }
-    .paper { box-shadow: none; min-height: 0; }   /* สูงตามเนื้อหา — กันล้นเศษไปหน้า 2 (จอยังโชว์เต็มหน้าจาก min-height 297mm) */
+    .paper { box-shadow: none; overflow: hidden; }   /* เต็มหน้า A4 (กล่องชิดล่าง) + overflow:hidden กันล้นเศษไปหน้า 2 */
     .fld:focus { background: transparent; }
   }
   @page { size: A4; margin: 0; }         /* ขอบมาจาก padding ของ .paper (8mm) */

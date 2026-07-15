@@ -33,11 +33,12 @@
     host = _host; accounts = _accounts || [];
     host.innerHTML = view();
     bind();
-    fitToPage();
-    // ฟอนต์เว็บ (Sarabun) โหลดเสร็จ metrics เปลี่ยน → วัด+ย่อใหม่ (กันเพี้ยนข้าม OS)
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitToPage);
-    // ย่อให้พอดีอีกทีตอนสั่งพิมพ์ (ชื่อไฟล์จัดการใน app.js — ต้องตั้ง title ก่อน window.print())
-    if (!window.__bikPrintHook) { window.__bikPrintHook = true; window.addEventListener('beforeprint', fitToPage); }
+    // ไม่ย่อบนจอ — โชว์เต็มขนาดเสมอทุกเครื่อง/ทุก OS (ย่อเฉพาะตอนพิมพ์ให้พอดี 1 หน้า)
+    if (!window.__bikPrintHook) {
+      window.__bikPrintHook = true;
+      window.addEventListener('beforeprint', fitToPage);
+      window.addEventListener('afterprint', () => { const i = host && host.querySelector('.sheet-inner'); if (i) i.style.zoom = '1'; });
+    }
   }
 
   // ชื่อไฟล์เวลา print/save: ใบเบิกเงิน <ไซต์งาน> <ผู้เบิก> <วันที่> (แทน / ในวันที่ด้วย - เลี่ยงปัญหา path)
@@ -147,14 +148,21 @@
   }
 
   // ── auto-fit: ย่อ (zoom) ให้เนื้อหาพอดี 1 หน้า A4 เมื่อสูงเกิน ──
-  const AVAIL_PX = 1060; // ความสูงพื้นที่พิมพ์ A4 (297mm − ขอบ 8mm×2) ที่ 96dpi
+  const AVAIL_PX = 1055; // ความสูงพื้นที่พิมพ์ A4 (296mm − ขอบ 8mm×2) ที่ 96dpi
   function fitToPage() {
     const inner = host && host.querySelector('.sheet-inner');
     if (!inner) return;
     inner.style.zoom = '1';
+    inner.style.flex = 'none';   // วัดความสูง "เนื้อหาจริง"
     const need = inner.scrollHeight;
-    // floor 0.82 = ไม่ย่อจนอ่านยาก (เกินนั้นยอมล้นหน้า 2); ปกติเนื้อหาพอดีหน้าอยู่แล้วจะไม่ย่อ
-    inner.style.zoom = need > AVAIL_PX ? String(Math.max(0.82, AVAIL_PX / need)) : '1';
+    if (need > AVAIL_PX) {
+      // เนื้อหาล้น: คงความสูงเนื้อหาจริง (ไม่ fill) แล้วย่อให้พอดี — เต็มหน้าอยู่แล้วไม่ต้องดันล่าง
+      inner.style.zoom = String(Math.max(0.82, AVAIL_PX / need));
+    } else {
+      // พอดี: fill + ดันกล่องลงชิดล่าง (flex:1 จาก CSS), ไม่ย่อ
+      inner.style.flex = '';
+      inner.style.zoom = '1';
+    }
   }
 
   // ── อัปเดตยอดสด โดยไม่ re-render (กันโฟกัสหลุดตอนพิมพ์) ──
@@ -165,7 +173,6 @@
     set('o-tax', fmt(t.tax)); set('o-ins', fmt(t.ins));
     host.querySelector('#o-net').innerHTML = '<b>' + fmt(t.net) + '</b>';
     set('o-net2', fmt(t.net)); set('o-txt', window.bahttext(t.net));
-    fitToPage();
   }
 
   function bind() {
@@ -193,5 +200,5 @@
   }
 
   window.TEMPLATES = window.TEMPLATES || {};
-  window.TEMPLATES.bik = { id: 'bik', title: 'ใบเบิกเงิน (ค่าแรง/วัสดุ)', render, compute, filename: docName };
+  window.TEMPLATES.bik = { id: 'bik', title: 'ใบเบิกเงิน (ค่าแรง/วัสดุ)', render, compute, filename: docName, fit: fitToPage };
 })();
