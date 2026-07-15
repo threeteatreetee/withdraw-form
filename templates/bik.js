@@ -190,9 +190,14 @@
     // ฟิลด์ตัวเลข → recompute
     const money = { 'f-adv': 'advance', 'f-tax': 'taxPct', 'f-ins': 'insPct', 'f-mat': 'matCut', 'f-sup': 'suppliesCut' };
     for (const id in money) { const el = q('#' + id); if (el) el.oninput = e => { data[money[id]] = e.target.value; recompute(); }; }
+    // ช่องเงินที่กรอกเอง → จัดรูปแบบ 2 ตำแหน่ง + คอมมา ตอนออกจากช่อง (เหมือนช่องอัตโนมัติ)
+    ['f-adv', 'f-mat', 'f-sup'].forEach(id => { const el = q('#' + id); if (el) el.onchange = e => { const v = e.target.value.trim(); e.target.value = v === '' ? '' : fmt(num(v)); data[money[id]] = e.target.value; recompute(); }; });
     // แถวรายการ (delegation)
     host.querySelectorAll('.li-name').forEach(el => el.oninput = e => { data.items[+e.target.dataset.i].name = e.target.value; });
-    host.querySelectorAll('.li-amt').forEach(el => el.oninput = e => { data.items[+e.target.dataset.i].amount = e.target.value; recompute(); });
+    host.querySelectorAll('.li-amt').forEach(el => {
+      el.oninput = e => { data.items[+e.target.dataset.i].amount = e.target.value; recompute(); };
+      el.onchange = e => { const v = e.target.value.trim(); e.target.value = v === '' ? '' : fmt(num(v)); data.items[+e.target.dataset.i].amount = e.target.value; recompute(); };
+    });
     host.querySelectorAll('.li-del').forEach(el => el.onclick = e => { data.items.splice(+e.target.dataset.i, 1); render(host, accounts); });
     q('#f-add').onclick = () => { data.items.push({ name: '', amount: '' }); render(host, accounts); };
     // เลือกจากบัญชี (พิมพ์ค้นหา) → autofill เมื่อค่าตรงกับรายการ
