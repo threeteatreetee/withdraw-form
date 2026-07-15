@@ -148,7 +148,7 @@
   }
 
   // ── auto-fit: ย่อ (zoom) ให้เนื้อหาพอดี 1 หน้า A4 เมื่อสูงเกิน ──
-  const AVAIL_PX = 1055; // ความสูงพื้นที่พิมพ์ A4 (296mm − ขอบ 8mm×2) ที่ 96dpi
+  const AVAIL_PX = 1035; // ความสูงพื้นที่พิมพ์ A4 (296mm − ขอบบน 8mm − ขอบล่าง 13mm) ที่ 96dpi
   function fitToPage() {
     const inner = host && host.querySelector('.sheet-inner');
     if (!inner) return;
