@@ -22,7 +22,7 @@
     date: todayTH(), payerName: '', bank: '', accountNo: '',
     work: '', place: '', amphoe: '', province: '',
     items: [],                 // {name, amount} — เริ่ม 0 แถว
-    advance: '', taxPct: 3, insPct: 5, matCut: '', suppliesCut: '',
+    advance: '', taxPct: 3, insPct: 5, loanCut: '', matCut: '', suppliesCut: '',
   };
 
   // ── การคำนวณ (money path) ──
@@ -32,10 +32,11 @@
     const remain1 = r2(sum - advance);
     const tax = r2(remain1 * num(d.taxPct) / 100);
     const ins = r2(sum * num(d.insPct) / 100);
+    const loanCut = num(d.loanCut);
     const matCut = num(d.matCut);
     const suppliesCut = num(d.suppliesCut);
-    const net = r2(remain1 - tax - ins - matCut - suppliesCut);
-    return { sum, advance, remain1, tax, ins, matCut, suppliesCut, net };
+    const net = r2(remain1 - tax - ins - loanCut - matCut - suppliesCut);
+    return { sum, advance, remain1, tax, ins, loanCut, matCut, suppliesCut, net };
   }
 
   let host = null, accounts = [];
@@ -116,6 +117,7 @@
         <tr><td class="lbl">คงเหลือ</td><td class="eq">=</td><td class="val out" id="o-remain1">${fmt(t.remain1)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักภาษี ณ ที่จ่าย <input class="fld pct" id="f-tax" value="${esc(data.taxPct)}" inputmode="decimal">%</td><td class="eq">=</td><td class="val out" id="o-tax">${fmt(t.tax)}</td><td>บาท</td></tr>
         <tr><td class="lbl">หักเงินประกันผลงาน <input class="fld pct" id="f-ins" value="${esc(data.insPct)}" inputmode="decimal">%</td><td class="eq">=</td><td class="val out" id="o-ins">${fmt(t.ins)}</td><td>บาท</td></tr>
+        <tr><td class="lbl">หักเงินยืม</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-loan" value="${esc(data.loanCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
         <tr><td class="lbl">หักค่าวัสดุ</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-mat" value="${esc(data.matCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
         <tr><td class="lbl">หักค่าวัสดุสิ้นเปลือง</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-sup" value="${esc(data.suppliesCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
         <tr class="net"><td class="lbl"><b>คงเหลือเป็นเงินทั้งสิ้น</b></td><td class="eq">=</td><td class="val out" id="o-net"><b>${fmt(t.net)}</b></td><td>บาท</td></tr>
@@ -184,7 +186,7 @@
     const need = inner.scrollHeight;
     if (need > AVAIL_PX) {
       // เนื้อหาล้น: คงความสูงเนื้อหาจริง (ไม่ fill) แล้วย่อให้พอดี — เต็มหน้าอยู่แล้วไม่ต้องดันล่าง
-      inner.style.zoom = String(Math.max(0.82, AVAIL_PX / need));
+      inner.style.zoom = String(Math.max(0.75, AVAIL_PX / need));
     } else {
       // พอดี: fill + ดันกล่องลงชิดล่าง (flex:1 จาก CSS), ไม่ย่อ
       inner.style.flex = '';
@@ -209,10 +211,10 @@
     // ช่องข้อความอิสระ = contenteditable (ยืด+ตัดบรรทัดเอง ไม่ตัดข้อความหาย) → อ่านจาก textContent
     host.querySelectorAll('[data-k]').forEach(el => el.oninput = e => { data[e.target.dataset.k] = e.target.textContent; });
     // ฟิลด์ตัวเลข → recompute
-    const money = { 'f-adv': 'advance', 'f-tax': 'taxPct', 'f-ins': 'insPct', 'f-mat': 'matCut', 'f-sup': 'suppliesCut' };
+    const money = { 'f-adv': 'advance', 'f-tax': 'taxPct', 'f-ins': 'insPct', 'f-loan': 'loanCut', 'f-mat': 'matCut', 'f-sup': 'suppliesCut' };
     for (const id in money) { const el = q('#' + id); if (el) el.oninput = e => { data[money[id]] = e.target.value; recompute(); }; }
     // ช่องเงินที่กรอกเอง → จัดรูปแบบ 2 ตำแหน่ง + คอมมา ตอนออกจากช่อง (เหมือนช่องอัตโนมัติ)
-    ['f-adv', 'f-mat', 'f-sup'].forEach(id => { const el = q('#' + id); if (el) el.onchange = e => { const v = e.target.value.trim(); e.target.value = v === '' ? '' : fmt(num(v)); data[money[id]] = e.target.value; recompute(); }; });
+    ['f-adv', 'f-loan', 'f-mat', 'f-sup'].forEach(id => { const el = q('#' + id); if (el) el.onchange = e => { const v = e.target.value.trim(); e.target.value = v === '' ? '' : fmt(num(v)); data[money[id]] = e.target.value; recompute(); }; });
     // แถวรายการ (delegation)
     host.querySelectorAll('.li-name').forEach(el => el.oninput = e => { data.items[+e.target.dataset.i].name = e.target.value; });
     host.querySelectorAll('.li-amt').forEach(el => {
