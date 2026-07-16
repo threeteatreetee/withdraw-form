@@ -102,7 +102,7 @@
 
       <div class="row-r">วันที่ <input class="fld w-date" id="f-date" value="${esc(data.date)}"></div>
 
-      <div class="ln"><b>เรื่อง</b>&nbsp;&nbsp;ขอเบิกเงินค่าแรงล่วงหน้าหรือค่าวัสดุ</div>
+      <div class="ln"><b>เรื่อง</b>&nbsp;&nbsp;ขอเบิกเงินค่าแรงล่วงหน้า, ค่าแรงผลงาน หรือค่าวัสดุ</div>
       <div class="ln"><b>เรียน</b>&nbsp;&nbsp;ผู้จัดการ${esc(co.name)}</div>
       <div class="ln">ด้วย ข้าพเจ้า <span class="fld ce wide" contenteditable="true" data-k="payerName">${esc(data.payerName)}</span> ได้เป็นผู้รับเหมางาน <span class="fld ce wide" contenteditable="true" data-k="work">${esc(data.work)}</span></div>
       <div class="ln">ณ <span class="fld ce" contenteditable="true" data-k="place">${esc(data.place)}</span> อำเภอ <span class="fld ce" contenteditable="true" data-k="amphoe">${esc(data.amphoe)}</span> จังหวัด <span class="fld ce" contenteditable="true" data-k="province">${esc(data.province)}</span> นั้น</div>
