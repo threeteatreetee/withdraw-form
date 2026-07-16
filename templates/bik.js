@@ -22,7 +22,7 @@
     date: todayTH(), payerName: '', bank: '', accountNo: '',
     work: '', place: '', amphoe: '', province: '',
     items: [],                 // {name, amount} — เริ่ม 0 แถว
-    advance: '', taxPct: 3, insPct: 5, loanCut: '', matCut: '', suppliesCut: '',
+    advance: '', taxPct: 3, insPct: 5, loanCut: '', matCut: '', suppliesCut: '', poMonth: '',
   };
 
   // ── การคำนวณ (money path) ──
@@ -131,7 +131,7 @@
         <label><input type="checkbox"> ได้รับเอกสารใบกำกับภาษีแล้ว</label>
         <label><input type="checkbox"> ได้ทำเอกสารภาษีหัก ณ ที่จ่ายแล้ว</label>
         <label><input type="checkbox"> ใบกำกับภาษีได้รับหลังโอนเงิน</label>
-        <label><input type="checkbox"> เช็คเอกสารตรงกับ P/O เดือน ........ แล้ว</label>
+        <label><input type="checkbox"> เช็คเอกสารตรงกับ P/O เดือน <span class="fld ce" contenteditable="true" data-k="poMonth">${esc(data.poMonth)}</span> แล้ว</label>
         <label><input type="checkbox"> บิลเงินสดได้รับหลังจากโอนเงิน</label>
         <label><input type="checkbox"> ไปโอนเงินสดที่เคาน์เตอร์</label>
       </div>
@@ -176,7 +176,7 @@
   }
 
   // ── auto-fit: ย่อ (zoom) ให้เนื้อหาพอดี 1 หน้า A4 เมื่อสูงเกิน ──
-  const AVAIL_PX = 1062; // ความสูงพื้นที่พิมพ์ A4 (296mm − ขอบบน 8mm − ขอบล่าง 7mm) ที่ 96dpi
+  const AVAIL_PX = 1100; // ความสูงพื้นที่พิมพ์ A4 (296mm − ขอบบน 8mm − ขอบล่าง 5mm) — ชดเชย under-render ของ zoom
   function fitToPage() {
     const inner = host && host.querySelector('.sheet-inner');
     if (!inner) return;
