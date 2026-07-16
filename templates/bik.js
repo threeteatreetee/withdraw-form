@@ -23,6 +23,7 @@
     work: '', place: '', amphoe: '', province: '',
     items: [],                 // {name, amount} — เริ่ม 0 แถว
     advance: '', taxPct: 3, insPct: 5, loanCut: '', matCut: '', suppliesCut: '', poMonth: '',
+    extraCuts: [],             // รายการหักเพิ่มเอง {name, amount}
   };
 
   // ── การคำนวณ (money path) ──
@@ -35,8 +36,9 @@
     const loanCut = num(d.loanCut);
     const matCut = num(d.matCut);
     const suppliesCut = num(d.suppliesCut);
-    const net = r2(remain1 - tax - ins - loanCut - matCut - suppliesCut);
-    return { sum, advance, remain1, tax, ins, loanCut, matCut, suppliesCut, net };
+    const extra = (d.extraCuts || []).reduce((a, c) => a + num(c.amount), 0);
+    const net = r2(remain1 - tax - ins - loanCut - matCut - suppliesCut - extra);
+    return { sum, advance, remain1, tax, ins, loanCut, matCut, suppliesCut, extra, net };
   }
 
   let host = null, accounts = [];
@@ -71,6 +73,14 @@
         <td class="c-eq">=</td>
         <td class="c-amt"><input class="li-amt fld amt" data-i="${i}" value="${esc(it.amount)}" inputmode="decimal" placeholder="0.00"></td>
         <td class="c-unit">บาท <button class="li-del no-print" data-i="${i}" title="ลบแถว">✕</button></td>
+      </tr>`).join('');
+
+    const cutRows = (data.extraCuts || []).map((c, i) => `
+      <tr>
+        <td class="lbl"><input class="fld cut-name" data-i="${i}" value="${esc(c.name)}" placeholder="ชื่อรายการหัก..."></td>
+        <td class="eq">=</td>
+        <td class="val"><input class="fld amt cut-amt" data-i="${i}" value="${esc(c.amount)}" inputmode="decimal" placeholder="0.00"></td>
+        <td>บาท <button class="cut-del no-print" data-i="${i}" title="ลบ">✕</button></td>
       </tr>`).join('');
 
     return `
@@ -120,6 +130,8 @@
         <tr><td class="lbl">หักเงินยืม</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-loan" value="${esc(data.loanCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
         <tr><td class="lbl">หักค่าวัสดุ</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-mat" value="${esc(data.matCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
         <tr><td class="lbl">หักค่าวัสดุสิ้นเปลือง</td><td class="eq">=</td><td class="val"><input class="fld amt" id="f-sup" value="${esc(data.suppliesCut)}" inputmode="decimal" placeholder="0.00"></td><td>บาท</td></tr>
+        ${cutRows}
+        <tr class="no-print"><td colspan="4" class="add-cut-cell"><button class="add-cut" id="f-add-cut">+ เพิ่มรายการหัก</button></td></tr>
         <tr class="net"><td class="lbl"><b>คงเหลือเป็นเงินทั้งสิ้น</b></td><td class="eq">=</td><td class="val out" id="o-net"><b>${fmt(t.net)}</b></td><td>บาท</td></tr>
       </table>
 
@@ -222,6 +234,14 @@
     });
     host.querySelectorAll('.li-del').forEach(el => el.onclick = e => { data.items.splice(+e.target.dataset.i, 1); render(host, accounts); });
     q('#f-add').onclick = () => { data.items.push({ name: '', amount: '' }); render(host, accounts); };
+    // รายการหักเพิ่มเอง
+    host.querySelectorAll('.cut-name').forEach(el => el.oninput = e => { data.extraCuts[+e.target.dataset.i].name = e.target.value; });
+    host.querySelectorAll('.cut-amt').forEach(el => {
+      el.oninput = e => { data.extraCuts[+e.target.dataset.i].amount = e.target.value; recompute(); };
+      el.onchange = e => { const v = e.target.value.trim(); e.target.value = v === '' ? '' : fmt(num(v)); data.extraCuts[+e.target.dataset.i].amount = e.target.value; recompute(); };
+    });
+    host.querySelectorAll('.cut-del').forEach(el => el.onclick = e => { data.extraCuts.splice(+e.target.dataset.i, 1); render(host, accounts); });
+    q('#f-add-cut').onclick = () => { (data.extraCuts = data.extraCuts || []).push({ name: '', amount: '' }); render(host, accounts); };
     // เลือกหัวบริษัท
     const cs = q('#company-select');
     if (cs) cs.onchange = e => { data.company = +e.target.value; render(host, accounts); };

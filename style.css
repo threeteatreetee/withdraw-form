@@ -76,6 +76,10 @@
   .calc td:last-child { width: 120px; }   /* เท่า c-unit → เลขตรงคอลัมน์กัน + ขยับเข้าซ้าย */
   .calc .out { font-variant-numeric: tabular-nums; }
   .calc .net .val { border-bottom: 2px solid #111; }
+  .cut-name { width: 100%; box-sizing: border-box; text-align: right; }   /* ชื่อรายการหักที่พิมพ์เอง */
+  .cut-del { border: none; background: none; color: #dc2626; cursor: pointer; font-size: 13px; }
+  .add-cut-cell { text-align: center; padding-top: 3px; }
+  .add-cut { border: 1px dashed #94a3b8; background: #f8fafc; color: #334155; padding: 3px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
   .calc .net td, .claim-red { color: #d00000; }   /* คงเหลือเป็นเงินทั้งสิ้น + ทั้งท่อนจำนวนเงินที่ขอเบิก (เลข+บาท+วงเล็บ+ตัวอักษร) = สีแดง */
   #o-net2 { font-weight: 700; }
 
