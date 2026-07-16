@@ -76,7 +76,7 @@
   .calc td:last-child { width: 120px; }   /* เท่า c-unit → เลขตรงคอลัมน์กัน + ขยับเข้าซ้าย */
   .calc .out { font-variant-numeric: tabular-nums; }
   .calc .net .val { border-bottom: 2px solid #111; }
-  .calc .net td, #o-net2, #o-txt { color: #d00000; }   /* คงเหลือเป็นเงินทั้งสิ้น + จำนวนเงิน + ตัวอักษรที่ขอเบิก = สีแดง */
+  .calc .net td, .claim-red { color: #d00000; }   /* คงเหลือเป็นเงินทั้งสิ้น + ทั้งท่อนจำนวนเงินที่ขอเบิก (เลข+บาท+วงเล็บ+ตัวอักษร) = สีแดง */
   #o-net2 { font-weight: 700; }
 
   .pay { margin: auto 0 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 20px; }   /* auto-top = ดันเช็คบ็อกซ์+ที่เหลือลงชิดล่าง */

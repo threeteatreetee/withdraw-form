@@ -136,8 +136,7 @@
         <label><input type="checkbox"> ไปโอนเงินสดที่เคาน์เตอร์</label>
       </div>
 
-      <div class="ln claim">ดังนั้น จึงขอเบิกเงิน เป็นจำนวน <span class="out" id="o-net2">${fmt(t.net)}</span> บาท
-        (<span class="out baht-txt" id="o-txt">${esc(window.bahttext(t.net))}</span>)</div>
+      <div class="ln claim">ดังนั้น จึงขอเบิกเงิน เป็นจำนวน <span class="claim-red"><span class="out" id="o-net2">${fmt(t.net)}</span> บาท (<span class="out baht-txt" id="o-txt">${esc(window.bahttext(t.net))}</span>)</span></div>
       <div class="ln">เพื่อที่ข้าพเจ้าฯ จะได้นำไปใช้จ่ายต่อไป</div>
       <div class="closing">
         <div>จึงเรียนมาเพื่อโปรดพิจารณา</div>
